@@ -8,6 +8,19 @@
 
 This package makes it easy to send [Twilio notifications](https://documentation.twilio.com/docs) with Laravel 5.3.
 
+## Contents
+
+- [Installation](#installation)
+	- [Setting up your Twilio account](#setting-up-your-twilio-account)
+- [Usage](#usage)
+	- [Available Message methods](#available-message-methods)
+- [Changelog](#changelog)
+- [Testing](#testing)
+- [Security](#security)
+- [Contributing](#contributing)
+- [Credits](#credits)
+- [License](#license)
+
 ## Installation
 
 You can install the package via composer:
@@ -49,6 +62,19 @@ class AccountApproved extends Notification
     }
 }
 ```
+
+### Setting up your Twilio account
+
+TODO
+
+## Usage
+
+TODO
+
+### Available Message methods
+
+TODO
+
 
 ## Changelog
 
