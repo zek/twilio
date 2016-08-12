@@ -36,8 +36,22 @@ You must install the service provider:
 // config/app.php
 'providers' => [
     ...
-    NotificationChannels\TwilioNotifications\Provider::class,
+    NotificationChannels\Twilio\TwilioProvider::class,
 ];
+```
+
+### Setting up your Twilio account
+
+Add your Twilio Account SID, Auth Token, and From Number (optional) to your `config/services.php`:
+
+```php
+// config/services.php
+
+    'twilio' => [
+        'account_sid' => env('TWILIO_ACCOUNT_SID'),
+        'auth_token' => env('TWILIO_AUTH_TOKEN'),
+        'from' => env('TWILIO_FROM'), // optional
+    ]
 ```
 
 ## Usage
@@ -45,37 +59,67 @@ You must install the service provider:
 Now you can use the channel in your `via()` method inside the notification:
 
 ``` php
-use NotificationChannels\TwilioNotifications\Channel;
-use NotificationChannels\TwilioNotifications\SmsMessage;
+use NotificationChannels\Twilio\TwilioChannel;
+use NotificationChannels\Twilio\TwilioSmsMessage;
 use Illuminate\Notifications\Notification;
 
 class AccountApproved extends Notification
 {
     public function via($notifiable)
     {
-        return [Channel::class];
+        return [TwilioChannel::class];
     }
 
     public function toTwilio($notifiable)
     {
-        return (new SmsMessage())
+        return (new TwilioSmsMessage())
             ->content("Your {$notifiable->service} account was approved!");
     }
 }
 ```
 
-### Setting up your Twilio account
+You can also create a Twilio call:
 
-TODO
+``` php
+use NotificationChannels\Twilio\TwilioChannel;
+use NotificationChannels\Twilio\TwilioCallMessage;
+use Illuminate\Notifications\Notification;
 
-## Usage
+class AccountApproved extends Notification
+{
+    public function via($notifiable)
+    {
+        return [TwilioChannel::class];
+    }
 
-TODO
+    public function toTwilio($notifiable)
+    {
+        return (new TwilioCallMessage())
+            ->url("http://example.com/your-twiml-url");
+    }
+}
+```
+
+In order to let your Notification know which phone are you sending/calling to, add the `routeNotificationForTwilio` method to your Notifiable model.
+
+```php
+public function routeNotificationForTwitter()
+{
+    return '+1234567890';
+}
+```
 
 ### Available Message methods
 
-TODO
+#### TwilioSmsMessage
 
+- `from('')`: Accepts a phone to use as the notification sender.
+- `content('')`: Accepts a string value for the notification body.
+
+#### TwilioCallMessage
+
+- `from('')`: Accepts a phone to use as the notification sender.
+- `url('')`: Accepts an url for the call TwiML.
 
 ## Changelog
 
@@ -87,13 +131,13 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 $ composer test
 ```
 
+## Security
+
+If you discover any security related issues, please email gregoriohc@gmail.com instead of using the issue tracker.
+
 ## Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Security
-
-If you discover any security related issues, please email m.pociot@gmail.com instead of using the issue tracker.
 
 ## Credits
 
