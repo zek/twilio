@@ -30,7 +30,7 @@ class TwilioChannel
      */
     public function send($notifiable, Notification $notification)
     {
-        if (!$to = $notifiable->routeNotificationFor('twilio')) {
+        if (! $to = $notifiable->routeNotificationFor('twilio')) {
             return;
         }
 
@@ -48,19 +48,19 @@ class TwilioChannel
             throw CouldNotSendNotification::invalidMessageObject($class);
         }
 
-        if (!$from = $message->from ?: config('services.twilio.from')) {
+        if (! $from = $message->from ?: config('services.twilio.from')) {
             throw CouldNotSendNotification::missingFrom();
         }
 
         $shouldSendMessage = event(new SendingMessage($notifiable, $notification, $message), [], true) !== false;
 
-        if (!$shouldSendMessage) {
+        if (! $shouldSendMessage) {
             return;
         }
 
         $response = null;
 
-        /** @var TwilioSmsMessage|TwilioCallMessage $message */
+        /* @var TwilioSmsMessage|TwilioCallMessage $message */
         try {
             if ($message instanceof TwilioSmsMessage) {
                 $response = $this->twilio->account->messages->sendMessage(
