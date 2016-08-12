@@ -2,7 +2,6 @@
 
 namespace NotificationChannels\Twilio\Test;
 
-use Illuminate\Support\Arr;
 use NotificationChannels\Twilio\TwilioSmsMessage;
 use PHPUnit_Framework_TestCase;
 
