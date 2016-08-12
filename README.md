@@ -103,7 +103,7 @@ class AccountApproved extends Notification
 In order to let your Notification know which phone are you sending/calling to, add the `routeNotificationForTwilio` method to your Notifiable model.
 
 ```php
-public function routeNotificationForTwitter()
+public function routeNotificationForTwilio()
 {
     return '+1234567890';
 }
