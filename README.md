@@ -1,55 +1,76 @@
-Use this repo as a skeleton for your new channel, once you're done please submit a Pull Request on [this repo](https://github.com/laravel-notification-channels/new-channels) with all the files.
+# Twilio notifications channel for Laravel 5.3 [WIP]
 
-Here's the latest documentation on Laravel 5.3 Notifications System: 
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/laravel-notification-channels/twilio.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/twilio)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+[![Build Status](https://img.shields.io/travis/laravel-notification-channels/twilio/master.svg?style=flat-square)](https://travis-ci.org/laravel-notification-channels/twilio)
+[![Quality Score](https://img.shields.io/scrutinizer/g/laravel-notification-channels/twilio.svg?style=flat-square)](https://scrutinizer-ci.com/g/laravel-notification-channels/twilio)
+[![Total Downloads](https://img.shields.io/packagist/dt/laravel-notification-channels/twilio.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/twilio)
 
-https://laravel.com/docs/master/notifications
-
-# A Boilerplate repo for contributions
-
-This package makes it easy to send notifications using [xxxxx](link to service) with Laravel 5.3.
-
-**Note:** Replace ```:channel_namespace``` ```:author_name``` ```:author_username``` ```:author_website``` ```:author_email``` ```:package_name``` ```:package_description``` with their correct values in [README.md](README.md), [CHANGELOG.md](CHANGELOG.md), [CONTRIBUTING.md](CONTRIBUTING.md), [LICENSE.md](LICENSE.md) and [composer.json](composer.json) files, then delete this line.
-This is where your description should go. Add a little code example so build can understand real quick how the package can be used. Try and limit it to a paragraph or two.
-
-
-
-## Contents
-
-- [Installation](#installation)
-	- [Setting up the xxxx service](#setting-up-the-xxxx-service)
-- [Usage](#usage)
-	- [Available Message methods](#available-message-methods)
-- [Changelog](#changelog)
-- [Testing](#testing)
-- [Security](#security)
-- [Contributing](#contributing)
-- [Credits](#credits)
-- [License](#license)
-
+This package makes it easy to send [Twilio notifications](https://documentation.twilio.com/docs) with Laravel 5.3.
 
 ## Installation
 
-Please also include the steps for any third-party service setup that's required for this package.
+You can install the package via composer:
 
-### Setting up the xxxx service
+``` bash
+composer require laravel-notification-channels/twilio
+```
 
-Optionally include a few steps how users can set up the service.
+You must install the service provider:
+
+```php
+// config/app.php
+'providers' => [
+    ...
+    NotificationChannels\TwilioNotifications\Provider::class,
+];
+```
 
 ## Usage
 
-Some code examples, make it clear how to use the package
+Now you can use the channel in your `via()` method inside the notification:
 
-### Available methods
+``` php
+use NotificationChannels\TwilioNotifications\Channel;
+use NotificationChannels\TwilioNotifications\SmsMessage;
+use Illuminate\Notifications\Notification;
 
-A list of all available options
+class AccountApproved extends Notification
+{
+    public function via($notifiable)
+    {
+        return [Channel::class];
+    }
+
+    public function toTwilio($notifiable)
+    {
+        return (new SmsMessage())
+            ->content("Your {$notifiable->service} account was approved!");
+    }
+}
+```
+
+## Changelog
+
+Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
+
+## Testing
+    
+``` bash
+$ composer test
+```
 
 ## Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
+## Security
+
+If you discover any security related issues, please email m.pociot@gmail.com instead of using the issue tracker.
+
 ## Credits
 
-- [:author_name](https://github.com/:author_username)
+- [Gregorio Hernández Caso](https://github.com/gregoriohc)
 - [All Contributors](../../contributors)
 
 ## License

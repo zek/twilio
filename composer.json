@@ -5,17 +5,18 @@
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": ":author_email",
-            "homepage": ":author_url",
+            "name": "Gregorio Hernández Caso",
+            "email": "gregoriohc@gmail.com",
+            "homepage": "https://github.com/gregoriohc",
             "role": "Developer"
         }
     ],
     "require": {
         "php": ">=5.6.4",
+        "illuminate/events": "^5.3@dev",
         "illuminate/notifications": "^5.3@dev",
         "illuminate/support": "^5.3@dev",
-        "illuminate/events": "^5.3@dev"
+        "twilio/sdk": "^4.11"
     },
     "require-dev": {
         "mockery/mockery": "^0.9.5",
@@ -23,12 +24,12 @@
     },
     "autoload": {
         "psr-4": {
-            "NotificationChannels\\:channel_namespace\\": "src"
+            "NotificationChannels\\Twilio\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "NotificationChannels\\:channel_namespace\\Test\\": "tests"
+            "NotificationChannels\\Twilio\\Test\\": "tests"
         }
     },
     "config": {
