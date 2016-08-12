@@ -29,7 +29,7 @@ class TwilioChannel
      */
     public function send($notifiable, Notification $notification)
     {
-        if (!$to = $notifiable->routeNotificationFor('twilio')) {
+        if (! $to = $notifiable->routeNotificationFor('twilio')) {
             return;
         }
 
@@ -39,17 +39,17 @@ class TwilioChannel
             $message = new TwilioSmsMessage($message);
         }
 
-        if (!in_array(get_class($message), [TwilioSmsMessage::class, TwilioCallMessage::class])) {
+        if (! in_array(get_class($message), [TwilioSmsMessage::class, TwilioCallMessage::class])) {
             throw CouldNotSendNotification::invalidMessageObject($message);
         }
 
-        if (!$from = $message->from ?: config('services.twilio.from')) {
+        if (! $from = $message->from ?: config('services.twilio.from')) {
             throw CouldNotSendNotification::missingFrom();
         }
 
         $shouldSendMessage = event(new SendingMessage($notifiable, $notification, $message), [], true) !== false;
 
-        if (!$shouldSendMessage) {
+        if (! $shouldSendMessage) {
             return;
         }
 
@@ -80,6 +80,7 @@ class TwilioChannel
                 $to,
                 trim($message->content)
             );
+
             return $response;
         }
 
