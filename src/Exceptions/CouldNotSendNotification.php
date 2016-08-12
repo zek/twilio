@@ -24,6 +24,14 @@ class CouldNotSendNotification extends \Exception
      */
     public static function invalidMessageObject($class)
     {
-        return new static("Message object class `{$class}` is invalid. It should be either `".SmsMessage::class.'` or `'.CallMessage::class.'`');
+        return new static("Notification was not sent. Message object class `{$class}` is invalid. It should be either `".SmsMessage::class.'` or `'.CallMessage::class.'`');
+    }
+
+    /**
+     * @return static
+     */
+    public static function missingFrom()
+    {
+        return new static("Notification was not sent. Missing `from` number.");
     }
 }

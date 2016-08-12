@@ -2,14 +2,14 @@
 
 namespace NotificationChannels\Twilio;
 
-class CallMessage
+class TwilioSmsMessage
 {
     /**
-     * The message TwiML url.
+     * The message content.
      *
      * @var string
      */
-    public $url;
+    public $content;
 
     /**
      * The phone number the message should be sent from.
@@ -21,23 +21,23 @@ class CallMessage
     /**
      * Create a new message instance.
      *
-     * @param  string  $url
+     * @param  string  $content
      * @return void
      */
-    public function __construct($url = '')
+    public function __construct($content = '')
     {
-        $this->url = $url;
+        $this->content = $content;
     }
 
     /**
      * Set the message content.
      *
-     * @param  string  $url
+     * @param  string  $content
      * @return $this
      */
-    public function url($url)
+    public function content($content)
     {
-        $this->url = $url;
+        $this->content = $content;
 
         return $this;
     }

@@ -4,14 +4,14 @@ namespace NotificationChannels\Twilio;
 
 use Illuminate\Support\ServiceProvider;
 
-class Provider extends ServiceProvider
+class TwilioProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
      */
     public function boot()
     {
-        $this->app->when(Channel::class)
+        $this->app->when(TwilioChannel::class)
             ->needs(\Services_Twilio::class)
             ->give(function () {
                 $config = config('services.twilio');

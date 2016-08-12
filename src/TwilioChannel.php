@@ -8,7 +8,7 @@ use NotificationChannels\Twilio\Events\SendingMessage;
 use NotificationChannels\Twilio\Exceptions\CouldNotSendNotification;
 use Services_Twilio;
 
-class Channel
+class TwilioChannel
 {
     /**
      * @var \Services_Twilio
@@ -34,20 +34,23 @@ class Channel
             return;
         }
 
-        $config = config('services.twilio');
-
         $message = $notification->toTwilio($notifiable);
 
         if (is_string($message)) {
-            $message = new SmsMessage($message);
+            // Default to SMS message if only a string is provided
+            $message = new TwilioSmsMessage($message);
         }
 
-        if (!$message instanceof SmsMessage::class &&
-            !$message instanceof CallMessage::class
+        if (!$message instanceof TwilioSmsMessage::class &&
+            !$message instanceof TwilioCallMessage::class
         ) {
             $class = get_class($message) ?: 'Unknown';
 
             throw CouldNotSendNotification::invalidMessageObject($class);
+        }
+
+        if (!$from = $message->from ?: config('services.twilio.from')) {
+            throw CouldNotSendNotification::missingFrom();
         }
 
         $shouldSendMessage = event(new SendingMessage($notifiable, $notification, $message), [], true) !== false;
@@ -58,17 +61,17 @@ class Channel
 
         $response = null;
 
-        /** @var SmsMessage|CallMessage $message */
+        /** @var TwilioSmsMessage|TwilioCallMessage $message */
         try {
-            if ($message instanceof SmsMessage::class) {
+            if ($message instanceof TwilioSmsMessage::class) {
                 $response = $this->twilio->account->messages->sendMessage(
-                    $message->from ?: $config['from'],
+                    $from,
                     $to,
                     trim($message->content)
                 );
-            } elseif ($message instanceof CallMessage::class) {
+            } elseif ($message instanceof TwilioCallMessage::class) {
                 $response = $this->twilio->account->calls->create(
-                    $message->from ?: $config['from'],
+                    $from,
                     $to,
                     trim($message->url)
                 );
