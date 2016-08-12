@@ -1,7 +1,7 @@
 {
-    "name": "laravel-notification-channels/skeleton",
+    "name": "laravel-notification-channels/twilio",
     "description": "A boilerplate for contributions.",
-    "homepage": "https://github.com/laravel-notification-channels/skeleton",
+    "homepage": "https://github.com/laravel-notification-channels/twilio",
     "license": "MIT",
     "authors": [
         {
