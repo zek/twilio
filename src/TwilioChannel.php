@@ -41,8 +41,8 @@ class TwilioChannel
             $message = new TwilioSmsMessage($message);
         }
 
-        if (! ($message instanceof TwilioSmsMessage::class) &&
-            ! ($message instanceof TwilioCallMessage::class)) {
+        if (! ($message instanceof TwilioSmsMessage) &&
+            ! ($message instanceof TwilioCallMessage)) {
             $class = get_class($message) ?: 'Unknown';
 
             throw CouldNotSendNotification::invalidMessageObject($class);
@@ -62,13 +62,13 @@ class TwilioChannel
 
         /** @var TwilioSmsMessage|TwilioCallMessage $message */
         try {
-            if ($message instanceof TwilioSmsMessage::class) {
+            if ($message instanceof TwilioSmsMessage) {
                 $response = $this->twilio->account->messages->sendMessage(
                     $from,
                     $to,
                     trim($message->content)
                 );
-            } elseif ($message instanceof TwilioCallMessage::class) {
+            } elseif ($message instanceof TwilioCallMessage) {
                 $response = $this->twilio->account->calls->create(
                     $from,
                     $to,
