@@ -18,13 +18,15 @@ class CouldNotSendNotification extends \Exception
     }
 
     /**
-     * @param string $class
+     * @param mixed $message
      *
      * @return static
      */
-    public static function invalidMessageObject($class)
+    public static function invalidMessageObject($message)
     {
-        return new static("Notification was not sent. Message object class `{$class}` is invalid. It should be either `".SmsMessage::class.'` or `'.CallMessage::class.'`');
+        $className = get_class($message) ?: 'Unknown';
+
+        return new static("Notification was not sent. Message object class `{$className}` is invalid. It should be either `".SmsMessage::class.'` or `'.CallMessage::class.'`');
     }
 
     /**

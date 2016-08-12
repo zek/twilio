@@ -21,7 +21,9 @@ class MessageWasSent
     public function __construct($notifiable, Notification $notification, $response = null)
     {
         $this->notifiable = $notifiable;
+
         $this->notification = $notification;
+
         $this->response = $response;
     }
 }

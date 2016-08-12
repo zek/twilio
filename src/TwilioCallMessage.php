@@ -19,17 +19,6 @@ class TwilioCallMessage
     public $from;
 
     /**
-     * Create a new message instance.
-     *
-     * @param  string  $url
-     * @return void
-     */
-    public function __construct($url = '')
-    {
-        $this->url = $url;
-    }
-
-    /**
      * @param string $url
      *
      * @return static
@@ -40,9 +29,20 @@ class TwilioCallMessage
     }
 
     /**
+     * Create a new message instance.
+     *
+     * @param  string  $url
+     */
+    public function __construct($url = '')
+    {
+        $this->url = $url;
+    }
+
+    /**
      * Set the message content.
      *
      * @param  string  $url
+     *
      * @return $this
      */
     public function url($url)
@@ -56,6 +56,7 @@ class TwilioCallMessage
      * Set the phone number the message should be sent from.
      *
      * @param  string  $from
+     *
      * @return $this
      */
     public function from($from)

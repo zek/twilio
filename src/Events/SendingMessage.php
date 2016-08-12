@@ -11,6 +11,7 @@ class SendingMessage
     /** @var \Illuminate\Notifications\Notification */
     protected $notification;
 
+    /** @var mixed|\NotificationChannels\Twilio\CallMessage|\NotificationChannels\Twilio\SmsMessage */
     protected $message;
 
     /**
