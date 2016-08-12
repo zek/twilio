@@ -30,6 +30,16 @@ class TwilioCallMessage
     }
 
     /**
+     * @param string $url
+     *
+     * @return static
+     */
+    public static function create($url = '')
+    {
+        return new static($url);
+    }
+
+    /**
      * Set the message content.
      *
      * @param  string  $url

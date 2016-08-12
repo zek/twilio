@@ -30,6 +30,16 @@ class TwilioSmsMessage
     }
 
     /**
+     * @param string $content
+     *
+     * @return static
+     */
+    public static function create($content = '')
+    {
+        return new static($content);
+    }
+
+    /**
      * Set the message content.
      *
      * @param  string  $content
