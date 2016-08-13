@@ -37,7 +37,7 @@ You must install the service provider:
 'providers' => [
     ...
     NotificationChannels\Twilio\TwilioProvider::class,
-];
+],
 ```
 
 ### Setting up your Twilio account
@@ -46,12 +46,13 @@ Add your Twilio Account SID, Auth Token, and From Number (optional) to your `con
 
 ```php
 // config/services.php
-
-    'twilio' => [
-        'account_sid' => env('TWILIO_ACCOUNT_SID'),
-        'auth_token' => env('TWILIO_AUTH_TOKEN'),
-        'from' => env('TWILIO_FROM'), // optional
-    ]
+...
+'twilio' => [
+    'account_sid' => env('TWILIO_ACCOUNT_SID'),
+    'auth_token' => env('TWILIO_AUTH_TOKEN'),
+    'from' => env('TWILIO_FROM'), // optional
+],
+...
 ```
 
 ## Usage
