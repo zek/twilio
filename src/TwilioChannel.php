@@ -47,12 +47,6 @@ class TwilioChannel
             throw CouldNotSendNotification::missingFrom();
         }
 
-        $shouldSendMessage = event(new SendingMessage($notifiable, $notification, $message), [], true) !== false;
-
-        if (! $shouldSendMessage) {
-            return;
-        }
-
         $response = null;
 
         try {
@@ -60,8 +54,6 @@ class TwilioChannel
         } catch (Exception $exception) {
             throw CouldNotSendNotification::serviceRespondedWithAnException($exception);
         }
-
-        event(new MessageWasSent($notifiable, $notification, $response));
     }
 
     /**
