@@ -4,8 +4,6 @@ namespace NotificationChannels\Twilio;
 
 use Exception;
 use Illuminate\Notifications\Notification;
-use NotificationChannels\Twilio\Events\MessageWasSent;
-use NotificationChannels\Twilio\Events\SendingMessage;
 use NotificationChannels\Twilio\Exceptions\CouldNotSendNotification;
 use Services_Twilio;
 
@@ -30,7 +28,9 @@ class TwilioChannel
     public function send($notifiable, Notification $notification)
     {
         if (! $to = $notifiable->routeNotificationFor('twilio')) {
-            return;
+            if (! $to = $notifiable->phone_number) {
+                return;
+            }
         }
 
         $message = $notification->toTwilio($notifiable);
@@ -39,7 +39,7 @@ class TwilioChannel
             $message = new TwilioSmsMessage($message);
         }
 
-        if (! in_array(get_class($message), [TwilioSmsMessage::class, TwilioCallMessage::class])) {
+        if (! $message instanceof TwilioAbstractMessage) {
             throw CouldNotSendNotification::invalidMessageObject($message);
         }
 
@@ -47,10 +47,8 @@ class TwilioChannel
             throw CouldNotSendNotification::missingFrom();
         }
 
-        $response = null;
-
         try {
-            $response = $this->sendMessage($message, $from, $to);
+            $this->sendMessage($message, $from, $to);
         } catch (Exception $exception) {
             throw CouldNotSendNotification::serviceRespondedWithAnException($exception);
         }
@@ -72,15 +70,13 @@ class TwilioChannel
                 $to,
                 trim($message->content)
             );
-
-            return $response;
         }
 
         if ($message instanceof TwilioCallMessage) {
             return $this->twilio->account->calls->create(
                 $from,
                 $to,
-                trim($message->url)
+                trim($message->content)
             );
         }
 

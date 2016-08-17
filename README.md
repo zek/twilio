@@ -101,7 +101,7 @@ class AccountApproved extends Notification
 }
 ```
 
-In order to let your Notification know which phone are you sending/calling to, add the `routeNotificationForTwilio` method to your Notifiable model.
+In order to let your Notification know which phone are you sending/calling to, the channel will look for the `phone_number` attribute of the Notifiable model. If you want to override this behaviour, add the `routeNotificationForTwilio` method to your Notifiable model.
 
 ```php
 public function routeNotificationForTwilio()

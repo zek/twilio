@@ -22,7 +22,7 @@ class TwilioCallMessageTest extends PHPUnit_Framework_TestCase
     {
         $message = new TwilioCallMessage('http://example.com');
 
-        $this->assertEquals('http://example.com', $message->url);
+        $this->assertEquals('http://example.com', $message->content);
     }
 
     /** @test */
@@ -30,7 +30,7 @@ class TwilioCallMessageTest extends PHPUnit_Framework_TestCase
     {
         $message = TwilioCallMessage::create('http://example.com');
 
-        $this->assertEquals('http://example.com', $message->url);
+        $this->assertEquals('http://example.com', $message->content);
     }
 
     /** @test */
@@ -38,7 +38,7 @@ class TwilioCallMessageTest extends PHPUnit_Framework_TestCase
     {
         $this->message->url('http://example.com');
 
-        $this->assertEquals('http://example.com', $this->message->url);
+        $this->assertEquals('http://example.com', $this->message->content);
     }
 
     /** @test */
