@@ -5,6 +5,7 @@
 [![Build Status](https://img.shields.io/travis/laravel-notification-channels/twilio/master.svg?style=flat-square)](https://travis-ci.org/laravel-notification-channels/twilio)
 [![StyleCI](https://styleci.io/repos/65543339/shield)](https://styleci.io/repos/65543339)
 [![Quality Score](https://img.shields.io/scrutinizer/g/laravel-notification-channels/twilio.svg?style=flat-square)](https://scrutinizer-ci.com/g/laravel-notification-channels/twilio)
+[![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/laravel-notification-channels/twilio/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/laravel-notification-channels/twilio/?branch=master)
 [![Total Downloads](https://img.shields.io/packagist/dt/laravel-notification-channels/twilio.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/twilio)
 
 This package makes it easy to send [Twilio notifications](https://documentation.twilio.com/docs) with Laravel 5.3.
@@ -127,7 +128,7 @@ public function routeNotificationForTwilio()
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
 ## Testing
-    
+
 ``` bash
 $ composer test
 ```
