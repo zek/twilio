@@ -8,16 +8,6 @@ use NotificationChannels\Twilio\SmsMessage;
 class CouldNotSendNotification extends \Exception
 {
     /**
-     * @param \Exception $exception
-     *
-     * @return static
-     */
-    public static function serviceRespondedWithAnException($exception)
-    {
-        return new static("Notification was not sent. Twilio responded with `{$exception->getCode()}: {$exception->getMessage()}`");
-    }
-
-    /**
      * @param mixed $message
      *
      * @return static

@@ -4,17 +4,33 @@ namespace NotificationChannels\Twilio;
 
 use Exception;
 use Illuminate\Notifications\Notification;
+use Illuminate\Events\Dispatcher;
 use NotificationChannels\Twilio\Exceptions\CouldNotSendNotification;
+use Illuminate\Notifications\Events\NotificationFailed;
 use Services_Twilio;
 
 class TwilioChannel
 {
-    /** @var \Services_Twilio */
+    /**
+     * @var \Services_Twilio
+     */
     protected $twilio;
 
-    public function __construct(Services_Twilio $twilio)
+    /**
+     * @var \Illuminate\Events\Dispatcher
+     */
+    private $events;
+
+    /**
+     * TwilioChannel constructor.
+     *
+     * @param Services_Twilio $twilio
+     * @param Dispatcher $events
+     */
+    public function __construct(Services_Twilio $twilio, Dispatcher $events)
     {
         $this->twilio = $twilio;
+        $this->events = $events;
     }
 
     /**
@@ -22,35 +38,37 @@ class TwilioChannel
      *
      * @param  mixed $notifiable
      * @param  \Illuminate\Notifications\Notification $notification
-     *
+     * @return mixed
      * @throws CouldNotSendNotification
      */
     public function send($notifiable, Notification $notification)
     {
         if (! $to = $notifiable->routeNotificationFor('twilio')) {
             if (! $to = $notifiable->phone_number) {
-                return;
+                return null;
             }
         }
 
-        $message = $notification->toTwilio($notifiable);
-
-        if (is_string($message)) {
-            $message = new TwilioSmsMessage($message);
-        }
-
-        if (! $message instanceof TwilioAbstractMessage) {
-            throw CouldNotSendNotification::invalidMessageObject($message);
-        }
-
-        if (! $from = $message->from ?: config('services.twilio.from')) {
-            throw CouldNotSendNotification::missingFrom();
-        }
-
         try {
-            $this->sendMessage($message, $from, $to);
+            $message = $notification->toTwilio($notifiable);
+
+            if (is_string($message)) {
+                $message = new TwilioSmsMessage($message);
+            }
+
+            if (! $message instanceof TwilioAbstractMessage) {
+                throw CouldNotSendNotification::invalidMessageObject($message);
+            }
+
+            if (! $from = $message->from ?: config('services.twilio.from')) {
+                throw CouldNotSendNotification::missingFrom();
+            }
+
+            return $this->sendMessage($message, $from, $to);
         } catch (Exception $exception) {
-            throw CouldNotSendNotification::serviceRespondedWithAnException($exception);
+            $this->events->fire(
+                new NotificationFailed($notifiable, $notification, 'twilio', ['message' => $exception->getMessage()])
+            );
         }
     }
 
