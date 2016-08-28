@@ -3,6 +3,7 @@
 namespace NotificationChannels\Twilio;
 
 use Illuminate\Support\ServiceProvider;
+use Services_Twilio as TwilioService;
 
 class TwilioProvider extends ServiceProvider
 {
@@ -12,13 +13,16 @@ class TwilioProvider extends ServiceProvider
     public function boot()
     {
         $this->app->when(TwilioChannel::class)
-            ->needs(\Services_Twilio::class)
+            ->needs(Twilio::class)
             ->give(function () {
-                $config = config('services.twilio');
+                $config = $this->app['config']['services.twilio'];
 
-                return new \Services_Twilio(
-                    $config['account_sid'],
-                    $config['auth_token']
+                return new Twilio(
+                    $this->app->make(TwilioService::class, [
+                        $config['account_sid'],
+                        $config['auth_token'],
+                    ]),
+                    $config['from']
                 );
             });
     }
