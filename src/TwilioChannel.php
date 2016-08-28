@@ -51,6 +51,8 @@ class TwilioChannel
 
         try {
             $message = $notification->toTwilio($notifiable);
+            $params = [];
+            $from = null;
 
             if (is_string($message)) {
                 $message = new TwilioSmsMessage($message);
@@ -60,11 +62,23 @@ class TwilioChannel
                 throw CouldNotSendNotification::invalidMessageObject($message);
             }
 
-            if (! $from = $message->from ?: config('services.twilio.from')) {
+            if (method_exists($notifiable, 'canReceiveAlphanumericSender') &&
+                $notifiable->canReceiveAlphanumericSender() &&
+                $sender = config('services.twilio.alphanumeric_sender')) {
+                $from = $sender;
+            } else {
+                $from = $message->from ?: config('services.twilio.from');
+            }
+
+            if (! $from) {
                 throw CouldNotSendNotification::missingFrom();
             }
 
-            return $this->sendMessage($message, $from, $to);
+            if ($serviceSid = config('services.twilio.sms_service_sid')) {
+                $params['MessagingServiceSid'] = $serviceSid;
+            }
+
+            return $this->sendMessage($message, $from, $to, $params);
         } catch (Exception $exception) {
             $this->events->fire(
                 new NotificationFailed($notifiable, $notification, 'twilio', ['message' => $exception->getMessage()])
@@ -80,13 +94,15 @@ class TwilioChannel
      *
      * @throws \NotificationChannels\Twilio\Exceptions\CouldNotSendNotification
      */
-    protected function sendMessage($message, $from, $to)
+    protected function sendMessage($message, $from, $to, $params = [])
     {
         if ($message instanceof TwilioSmsMessage) {
             return $this->twilio->account->messages->sendMessage(
                 $from,
                 $to,
-                trim($message->content)
+                trim($message->content),
+                null,
+                $params
             );
         }
 
