@@ -24,9 +24,9 @@ class TwilioProvider extends ServiceProvider
     }
     
     /**		
-      * Register the application services.		
-      */		
-     public function register()		
+     * Register the application services.		
+     */		
+    public function register()		
     {		
     }
 }
