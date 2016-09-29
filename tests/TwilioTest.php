@@ -68,6 +68,54 @@ class TwilioTest extends MockeryTestCase
     }
 
     /** @test */
+    public function it_can_send_a_sms_message_to_twilio_with_alphanumeric_sender()
+    {
+        $message = new TwilioSmsMessage('Message text');
+
+        $this->config->shouldReceive('getAlphanumericSender')
+            ->once()
+            ->andReturn('TwilioTest');
+
+        $this->config->shouldNotReceive('getFrom');
+
+        $this->config->shouldReceive('getSmsParams')
+            ->once()
+            ->andReturn([]);
+
+        $this->twilioService->account->messages->shouldReceive('sendMessage')
+            ->atLeast()->once()
+            ->with('TwilioTest', '+1111111111', 'Message text', null, [])
+            ->andReturn(true);
+
+        $this->twilio->sendMessage($message, '+1111111111', true);
+    }
+
+    /** @test */
+    public function it_can_send_a_sms_message_to_twilio_with_messaging_service()
+    {
+        $message = new TwilioSmsMessage('Message text');
+
+        $this->config->shouldReceive('getFrom')
+            ->once()
+            ->andReturn('+1234567890');
+
+        $this->config->shouldReceive('getSmsParams')
+            ->once()
+            ->andReturn([
+                'MessagingServiceSid' => 'service_sid'
+            ]);
+
+        $this->twilioService->account->messages->shouldReceive('sendMessage')
+            ->atLeast()->once()
+            ->with('+1234567890', '+1111111111', 'Message text', null, [
+                'MessagingServiceSid' => 'service_sid'
+            ])
+            ->andReturn(true);
+
+        $this->twilio->sendMessage($message, '+1111111111');
+    }
+
+    /** @test */
     public function it_can_send_a_call_to_twilio()
     {
         $message = new TwilioCallMessage('http://example.com');
