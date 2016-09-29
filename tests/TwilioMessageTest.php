@@ -31,4 +31,12 @@ abstract class TwilioMessageTest extends MockeryTestCase
 
         $this->assertEquals('+1234567890', $this->message->from);
     }
+
+    /** @test */
+    public function it_can_return_the_from_using_getter()
+    {
+        $this->message->from('+1234567890');
+
+        $this->assertEquals('+1234567890', $this->message->getFrom());
+    }
 }
