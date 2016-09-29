@@ -110,6 +110,22 @@ class TwilioChannelTest extends MockeryTestCase
 
         $this->channel->send($notifiable, $notification);
     }
+
+    /** @test */
+    public function it_will_send_using_alphanumeric_if_notifiable_can_receive()
+    {
+        $notifiable = new NotifiableWithAlphanumericSender();
+        $notification = Mockery::mock(Notification::class);
+
+        $message = new TwilioSmsMessage('Message text');
+        $notification->shouldReceive('toTwilio')->andReturn($message);
+
+        $this->twilio->shouldReceive('sendMessage')
+            ->atLeast()->once()
+            ->with($message, '+33333333333', true);
+
+        $this->channel->send($notifiable, $notification);
+    }
 }
 
 class Notifiable
