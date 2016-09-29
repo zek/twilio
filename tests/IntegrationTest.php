@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notification;
 use Mockery;
 use NotificationChannels\Twilio\TwilioCallMessage;
 use NotificationChannels\Twilio\TwilioChannel;
+use NotificationChannels\Twilio\TwilioConfig;
 use NotificationChannels\Twilio\TwilioSmsMessage;
 use PHPUnit_Framework_TestCase;
 use NotificationChannels\Twilio\Twilio;
@@ -44,13 +45,53 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         $message = TwilioSmsMessage::create('Message text');
         $this->notification->shouldReceive('toTwilio')->andReturn($message);
 
-        $twilio = new Twilio($this->twilioService, '+31612345678');
-
+        $config = new TwilioConfig([
+            'from' => '+31612345678'
+        ]);
+        $twilio = new Twilio($this->twilioService, $config);
         $channel = new TwilioChannel($twilio, $this->events);
 
-        $this->smsMessageWillBeSentToTwilioWith('+31612345678', '+22222222222', 'Message text');
+        $this->smsMessageWillBeSentToTwilioWith('+31612345678', '+22222222222', 'Message text', null, []);
 
         $channel->send(new NotifiableWithAttribute(), $this->notification);
+    }
+
+    /** @test */
+    public function it_can_send_a_sms_message_using_service()
+    {
+        $message = TwilioSmsMessage::create('Message text');
+        $this->notification->shouldReceive('toTwilio')->andReturn($message);
+
+        $config = new TwilioConfig([
+            'from' => '+31612345678',
+            'sms_service_sid' => '0123456789'
+        ]);
+        $twilio = new Twilio($this->twilioService, $config);
+        $channel = new TwilioChannel($twilio, $this->events);
+
+        $this->smsMessageWillBeSentToTwilioWith('+31612345678', '+22222222222', 'Message text', null, [
+            'MessagingServiceSid' => '0123456789'
+        ]);
+
+        $channel->send(new NotifiableWithAttribute(), $this->notification);
+    }
+
+    /** @test */
+    public function it_can_send_a_sms_message_using_alphanumeric_sender()
+    {
+        $message = TwilioSmsMessage::create('Message text');
+        $this->notification->shouldReceive('toTwilio')->andReturn($message);
+
+        $config = new TwilioConfig([
+            'from' => '+31612345678',
+            'alphanumeric_sender' => 'TwilioTest'
+        ]);
+        $twilio = new Twilio($this->twilioService, $config);
+        $channel = new TwilioChannel($twilio, $this->events);
+
+        $this->smsMessageWillBeSentToTwilioWith('TwilioTest', '+33333333333', 'Message text', null, []);
+
+        $channel->send(new NotifiableWithAlphanumericSender(), $this->notification);
     }
 
     /** @test */
@@ -59,8 +100,10 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         $message = TwilioCallMessage::create('http://example.com');
         $this->notification->shouldReceive('toTwilio')->andReturn($message);
 
-        $twilio = new Twilio($this->twilioService, '+31612345678');
-
+        $config = new TwilioConfig([
+            'from' => '+31612345678'
+        ]);
+        $twilio = new Twilio($this->twilioService, $config);
         $channel = new TwilioChannel($twilio, $this->events);
 
         $this->callWillBeSentToTwilioWith('+31612345678', '+22222222222', 'http://example.com');
@@ -68,19 +111,19 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         $channel->send(new NotifiableWithAttribute(), $this->notification);
     }
 
-    protected function smsMessageWillBeSentToTwilioWith($from, $to, $message)
+    protected function smsMessageWillBeSentToTwilioWith(...$args)
     {
         $this->twilioService->account->messages->shouldReceive('sendMessage')
             ->atLeast()->once()
-            ->with($from, $to, $message)
+            ->with(...$args)
             ->andReturn(true);
     }
 
-    protected function callWillBeSentToTwilioWith($from, $to, $url)
+    protected function callWillBeSentToTwilioWith(...$args)
     {
         $this->twilioService->account->calls->shouldReceive('create')
             ->atLeast()->once()
-            ->with($from, $to, $url)
+            ->with(...$args)
             ->andReturn(true);
     }
 }

@@ -13,34 +13,38 @@ class Twilio
     protected $twilioService;
 
     /**
-     * Default 'from' from config.
-     * @var string
+     * @var TwilioConfig
      */
-    protected $from;
+    private $config;
 
     /**
      * Twilio constructor.
      *
-     * @param  TwilioService  $twilioService
-     * @param  string  $from
+     * @param  TwilioService $twilioService
+     * @param TwilioConfig   $config
      */
-    public function __construct(TwilioService $twilioService, $from)
+    public function __construct(TwilioService $twilioService, TwilioConfig $config)
     {
         $this->twilioService = $twilioService;
-        $this->from = $from;
+        $this->config = $config;
     }
 
     /**
      * Send a TwilioMessage to the a phone number.
      *
-     * @param  TwilioMessage  $message
-     * @param  $to
+     * @param  TwilioMessage $message
+     * @param                $to
+     * @param bool           $useAlphanumericSender
      * @return mixed
      * @throws CouldNotSendNotification
      */
-    public function sendMessage(TwilioMessage $message, $to)
+    public function sendMessage(TwilioMessage $message, $to, $useAlphanumericSender = false)
     {
         if ($message instanceof TwilioSmsMessage) {
+            if ($useAlphanumericSender && $sender = $this->getAlphanumericSender()) {
+                $message->from($sender);
+            }
+
             return $this->sendSmsMessage($message, $to);
         }
 
@@ -56,7 +60,9 @@ class Twilio
         return $this->twilioService->account->messages->sendMessage(
             $this->getFrom($message),
             $to,
-            trim($message->content)
+            trim($message->content),
+            null,
+            $this->config->getSmsParams()
         );
     }
 
@@ -71,10 +77,19 @@ class Twilio
 
     protected function getFrom($message)
     {
-        if (! $from = $message->from ?: $this->from) {
+        if (! $from = $message->getFrom() ?: $this->config->getFrom()) {
             throw CouldNotSendNotification::missingFrom();
         }
 
         return $from;
+    }
+
+    protected function getAlphanumericSender()
+    {
+        if ($sender = $this->config->getAlphanumericSender()) {
+            return $sender;
+        }
+
+        return null;
     }
 }

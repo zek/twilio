@@ -45,6 +45,7 @@ class TwilioChannel
         try {
             $to = $this->getTo($notifiable);
             $message = $notification->toTwilio($notifiable);
+            $useSender = $this->canReceiveAlphanumericSender($notifiable);
 
             if (is_string($message)) {
                 $message = new TwilioSmsMessage($message);
@@ -54,7 +55,7 @@ class TwilioChannel
                 throw CouldNotSendNotification::invalidMessageObject($message);
             }
 
-            return $this->twilio->sendMessage($message, $to);
+            return $this->twilio->sendMessage($message, $to, $useSender);
         } catch (Exception $exception) {
             $this->events->fire(
                 new NotificationFailed($notifiable, $notification, 'twilio', ['message' => $exception->getMessage()])
@@ -72,5 +73,17 @@ class TwilioChannel
         }
 
         throw CouldNotSendNotification::invalidReceiver();
+    }
+
+    /**
+     * Get the alphanumeric sender
+     * @param $notifiable
+     * @return mixed|null
+     * @throws CouldNotSendNotification
+     */
+    protected function canReceiveAlphanumericSender($notifiable)
+    {
+        return (method_exists($notifiable, 'canReceiveAlphanumericSender') &&
+            $notifiable->canReceiveAlphanumericSender());
     }
 }

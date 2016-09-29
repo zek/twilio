@@ -12,18 +12,16 @@ class TwilioProvider extends ServiceProvider
      */
     public function boot()
     {
+        $config = $this->app->make(TwilioConfig::class, $this->app['config']['services.twilio']);
+        $twilio = $this->app->make(TwilioService::class, [
+            $config->getAccountSid(),
+            $config->getAuthToken(),
+        ]);
+
         $this->app->when(TwilioChannel::class)
             ->needs(Twilio::class)
-            ->give(function () {
-                $config = $this->app['config']['services.twilio'];
-
-                return new Twilio(
-                    $this->app->make(TwilioService::class, [
-                        $config['account_sid'],
-                        $config['auth_token'],
-                    ]),
-                    $config['from']
-                );
+            ->give(function () use ($twilio, $config) {
+                return new Twilio($twilio, $config);
             });
     }
 

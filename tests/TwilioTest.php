@@ -4,17 +4,18 @@ namespace NotificationChannels\Twilio\Test;
 
 use Illuminate\Contracts\Events\Dispatcher;
 use Mockery;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 use NotificationChannels\Twilio\Exceptions\CouldNotSendNotification;
+use NotificationChannels\Twilio\TwilioConfig;
 use NotificationChannels\Twilio\TwilioMessage;
 use NotificationChannels\Twilio\TwilioCallMessage;
 use NotificationChannels\Twilio\TwilioSmsMessage;
-use PHPUnit_Framework_TestCase;
 use NotificationChannels\Twilio\Twilio;
 use Services_Twilio_Rest_Calls;
 use Services_Twilio_Rest_Messages;
 use Services_Twilio as TwilioService;
 
-class TwilioTest extends PHPUnit_Framework_TestCase
+class TwilioTest extends MockeryTestCase
 {
     /** @var Twilio */
     protected $twilio;
@@ -25,18 +26,24 @@ class TwilioTest extends PHPUnit_Framework_TestCase
     /** @var Dispatcher */
     protected $dispatcher;
 
+    /**
+     * @var TwilioConfig
+     */
+    protected $config;
+
     public function setUp()
     {
         parent::setUp();
 
         $this->twilioService = Mockery::mock(TwilioService::class);
         $this->dispatcher = Mockery::mock(Dispatcher::class);
+        $this->config = Mockery::mock(TwilioConfig::class);
 
         $this->twilioService->account = new \stdClass();
         $this->twilioService->account->messages = Mockery::mock(Services_Twilio_Rest_Messages::class);
         $this->twilioService->account->calls = Mockery::mock(Services_Twilio_Rest_Calls::class);
 
-        $this->twilio = new Twilio($this->twilioService, '+1234567890');
+        $this->twilio = new Twilio($this->twilioService, $this->config);
     }
 
     /** @test */
@@ -44,9 +51,17 @@ class TwilioTest extends PHPUnit_Framework_TestCase
     {
         $message = new TwilioSmsMessage('Message text');
 
+        $this->config->shouldReceive('getFrom')
+            ->once()
+            ->andReturn('+1234567890');
+
+        $this->config->shouldReceive('getSmsParams')
+            ->once()
+            ->andReturn([]);
+
         $this->twilioService->account->messages->shouldReceive('sendMessage')
             ->atLeast()->once()
-            ->with('+1234567890', '+1111111111', 'Message text')
+            ->with('+1234567890', '+1111111111', 'Message text', null, [])
             ->andReturn(true);
 
         $this->twilio->sendMessage($message, '+1111111111');
@@ -75,9 +90,12 @@ class TwilioTest extends PHPUnit_Framework_TestCase
         );
 
         $smsMessage = new TwilioSmsMessage('Message text');
-        $twilio = new Twilio($this->twilioService, null);
 
-        $twilio->sendMessage($smsMessage, null);
+        $this->config->shouldReceive('getFrom')
+            ->once()
+            ->andReturn(null);
+
+        $this->twilio->sendMessage($smsMessage, null);
     }
 
     /** @test */

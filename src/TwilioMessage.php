@@ -65,4 +65,13 @@ abstract class TwilioMessage
 
         return $this;
     }
+
+    /**
+     * Get the from address
+     * @return string
+     */
+    public function getFrom()
+    {
+        return $this->from;
+    }
 }

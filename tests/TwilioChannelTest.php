@@ -6,13 +6,13 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Notifications\Events\NotificationFailed;
 use Mockery;
 use Illuminate\Notifications\Notification;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 use NotificationChannels\Twilio\TwilioCallMessage;
 use NotificationChannels\Twilio\TwilioChannel;
 use NotificationChannels\Twilio\TwilioSmsMessage;
-use PHPUnit_Framework_TestCase;
 use NotificationChannels\Twilio\Twilio;
 
-class TwilioChannelTest extends PHPUnit_Framework_TestCase
+class TwilioChannelTest extends MockeryTestCase
 {
     /** @var TwilioChannel */
     protected $channel;
@@ -59,7 +59,7 @@ class TwilioChannelTest extends PHPUnit_Framework_TestCase
 
         $this->twilio->shouldReceive('sendMessage')
             ->atLeast()->once()
-            ->with($message, '+1111111111');
+            ->with($message, '+1111111111', false);
 
         $this->channel->send($notifiable, $notification);
     }
@@ -75,7 +75,7 @@ class TwilioChannelTest extends PHPUnit_Framework_TestCase
 
         $this->twilio->shouldReceive('sendMessage')
             ->atLeast()->once()
-            ->with($message, '+22222222222');
+            ->with($message, '+22222222222', false);
 
         $this->channel->send($notifiable, $notification);
     }
@@ -90,7 +90,7 @@ class TwilioChannelTest extends PHPUnit_Framework_TestCase
 
         $this->twilio->shouldReceive('sendMessage')
             ->atLeast()->once()
-            ->with(Mockery::type(TwilioSmsMessage::class), Mockery::any());
+            ->with(Mockery::type(TwilioSmsMessage::class), Mockery::any(), false);
 
         $this->channel->send($notifiable, $notification);
     }
@@ -135,5 +135,19 @@ class NotifiableWithAttribute
 
     public function routeNotificationFor()
     {
+    }
+}
+
+class NotifiableWithAlphanumericSender
+{
+    public $phone_number = '+33333333333';
+
+    public function routeNotificationFor()
+    {
+    }
+
+    public function canReceiveAlphanumericSender()
+    {
+        return true;
     }
 }

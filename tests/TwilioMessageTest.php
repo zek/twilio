@@ -2,10 +2,10 @@
 
 namespace NotificationChannels\Twilio\Test;
 
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 use NotificationChannels\Twilio\TwilioMessage;
-use PHPUnit_Framework_TestCase;
 
-abstract class TwilioMessageTest extends PHPUnit_Framework_TestCase
+abstract class TwilioMessageTest extends MockeryTestCase
 {
     /** @var TwilioMessage */
     protected $message;
