@@ -42,14 +42,7 @@ class TwilioProviderTest extends MockeryTestCase
         $twilio = Mockery::mock(TwilioService::class);
         $config = Mockery::mock(TwilioConfig::class, $configArray);
 
-        $this->app->shouldReceive('offsetGet')
-            ->once()
-            ->with('config')
-            ->andReturn([
-                'services.twilio' => $configArray
-            ]);
-
-        $this->app->shouldReceive('make')->with(TwilioConfig::class, $configArray)->andReturn($config);
+        $this->app->shouldReceive('make')->with(TwilioConfig::class)->andReturn($config);
 
         $config->shouldReceive('getAccountSid')->once()->andReturn($configArray['account_sid']);
         $config->shouldReceive('getAuthToken')->once()->andReturn($configArray['auth_token']);
