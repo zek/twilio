@@ -26,7 +26,7 @@ class Twilio
     public function __construct(TwilioService $twilioService, TwilioConfig $config)
     {
         $this->twilioService = $twilioService;
-        $this->config        = $config;
+        $this->config = $config;
     }
 
     /**
@@ -101,7 +101,7 @@ class Twilio
      */
     protected function getFrom(TwilioMessage $message)
     {
-        if ( ! $from = $message->getFrom() ?: $this->config->getFrom()) {
+        if (! $from = $message->getFrom() ?: $this->config->getFrom()) {
             throw CouldNotSendNotification::missingFrom();
         }
 
