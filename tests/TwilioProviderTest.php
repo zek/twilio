@@ -49,7 +49,7 @@ class TwilioProviderTest extends MockeryTestCase
 
         $this->app->shouldReceive('make')->with(TwilioService::class, [
             $configArray['account_sid'],
-            $configArray['auth_token']
+            $configArray['auth_token'],
         ])->andReturn($twilio);
 
         $this->app->shouldReceive('when')->with(TwilioChannel::class)->once()->andReturn($this->app);

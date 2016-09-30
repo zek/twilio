@@ -45,14 +45,14 @@ class IntegrationTest extends MockeryTestCase
         $this->notification->shouldReceive('toTwilio')->andReturn($message);
 
         $config = new TwilioConfig([
-            'from' => '+31612345678'
+            'from' => '+31612345678',
         ]);
         $twilio = new Twilio($this->twilioService, $config);
         $channel = new TwilioChannel($twilio, $this->events);
 
         $this->smsMessageWillBeSentToTwilioWith('+22222222222', [
             'from' => '+31612345678',
-            'body' => 'Message text'
+            'body' => 'Message text',
         ]);
 
         $channel->send(new NotifiableWithAttribute(), $this->notification);
@@ -66,7 +66,7 @@ class IntegrationTest extends MockeryTestCase
 
         $config = new TwilioConfig([
             'from' => '+31612345678',
-            'sms_service_sid' => '0123456789'
+            'sms_service_sid' => '0123456789',
         ]);
         $twilio = new Twilio($this->twilioService, $config);
         $channel = new TwilioChannel($twilio, $this->events);
@@ -74,7 +74,7 @@ class IntegrationTest extends MockeryTestCase
         $this->smsMessageWillBeSentToTwilioWith('+22222222222', [
             'from' => '+31612345678',
             'body' => 'Message text',
-            'messagingServiceSid' => '0123456789'
+            'messagingServiceSid' => '0123456789',
         ]);
 
         $channel->send(new NotifiableWithAttribute(), $this->notification);
@@ -88,14 +88,14 @@ class IntegrationTest extends MockeryTestCase
 
         $config = new TwilioConfig([
             'from' => '+31612345678',
-            'alphanumeric_sender' => 'TwilioTest'
+            'alphanumeric_sender' => 'TwilioTest',
         ]);
         $twilio = new Twilio($this->twilioService, $config);
         $channel = new TwilioChannel($twilio, $this->events);
 
         $this->smsMessageWillBeSentToTwilioWith('+33333333333', [
             'from' => 'TwilioTest',
-            'body' => 'Message text'
+            'body' => 'Message text',
         ]);
 
         $channel->send(new NotifiableWithAlphanumericSender(), $this->notification);
@@ -108,13 +108,13 @@ class IntegrationTest extends MockeryTestCase
         $this->notification->shouldReceive('toTwilio')->andReturn($message);
 
         $config = new TwilioConfig([
-            'from' => '+31612345678'
+            'from' => '+31612345678',
         ]);
         $twilio = new Twilio($this->twilioService, $config);
         $channel = new TwilioChannel($twilio, $this->events);
 
         $this->callWillBeSentToTwilioWith('+22222222222', '+31612345678', [
-            'url' => 'http://example.com'
+            'url' => 'http://example.com',
         ]);
 
         $channel->send(new NotifiableWithAttribute(), $this->notification);

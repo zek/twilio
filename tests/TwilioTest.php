@@ -88,7 +88,7 @@ class TwilioTest extends MockeryTestCase
             ->atLeast()->once()
             ->with('+1111111111', [
                 'from' => 'TwilioTest',
-                'body' => 'Message text'
+                'body' => 'Message text',
             ])
             ->andReturn(true);
 
@@ -113,7 +113,7 @@ class TwilioTest extends MockeryTestCase
             ->with('+1111111111', [
                 'from' => '+1234567890',
                 'body' => 'Message text',
-                'messagingServiceSid' => 'service_sid'
+                'messagingServiceSid' => 'service_sid',
             ])
             ->andReturn(true);
 
@@ -129,7 +129,7 @@ class TwilioTest extends MockeryTestCase
         $this->twilioService->calls->shouldReceive('create')
             ->atLeast()->once()
             ->with('+1111111111', '+2222222222', [
-                'url' => 'http://example.com'
+                'url' => 'http://example.com',
             ])
             ->andReturn(true);
 

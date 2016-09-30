@@ -65,7 +65,7 @@ abstract class TwilioMessage
     }
 
     /**
-     * Get the from address
+     * Get the from address.
      *
      * @return string
      */

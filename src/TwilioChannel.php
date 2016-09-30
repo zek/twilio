@@ -91,7 +91,7 @@ class TwilioChannel
      */
     protected function canReceiveAlphanumericSender($notifiable)
     {
-        return (method_exists($notifiable, 'canReceiveAlphanumericSender') &&
-            $notifiable->canReceiveAlphanumericSender());
+        return method_exists($notifiable, 'canReceiveAlphanumericSender') &&
+        $notifiable->canReceiveAlphanumericSender();
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace NotificationChannels\Twilio;
 
 class TwilioConfig
