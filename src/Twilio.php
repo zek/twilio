@@ -66,7 +66,7 @@ class Twilio
             $params['messagingServiceSid'] = $serviceSid;
         }
 
-        $this->twilioService->messages->create($to, $params);
+        return $this->twilioService->messages->create($to, $params);
     }
 
     protected function makeCall($message, $to)
