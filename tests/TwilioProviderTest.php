@@ -8,7 +8,7 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 use NotificationChannels\Twilio\TwilioChannel;
 use NotificationChannels\Twilio\TwilioConfig;
 use NotificationChannels\Twilio\TwilioProvider;
-use Services_Twilio as TwilioService;
+use Twilio\Rest\Client as TwilioService;
 use NotificationChannels\Twilio\Twilio;
 use ArrayAccess;
 

@@ -13,7 +13,7 @@ use NotificationChannels\Twilio\TwilioSmsMessage;
 use NotificationChannels\Twilio\Twilio;
 use Services_Twilio_Rest_Calls;
 use Services_Twilio_Rest_Messages;
-use Services_Twilio as TwilioService;
+use Twilio\Rest\Client as TwilioService;
 
 class TwilioTest extends MockeryTestCase
 {
@@ -39,9 +39,8 @@ class TwilioTest extends MockeryTestCase
         $this->dispatcher = Mockery::mock(Dispatcher::class);
         $this->config = Mockery::mock(TwilioConfig::class);
 
-        $this->twilioService->account = new \stdClass();
-        $this->twilioService->account->messages = Mockery::mock(Services_Twilio_Rest_Messages::class);
-        $this->twilioService->account->calls = Mockery::mock(Services_Twilio_Rest_Calls::class);
+        $this->twilioService->messages = Mockery::mock(Services_Twilio_Rest_Messages::class);
+        $this->twilioService->calls = Mockery::mock(Services_Twilio_Rest_Calls::class);
 
         $this->twilio = new Twilio($this->twilioService, $this->config);
     }
@@ -55,13 +54,16 @@ class TwilioTest extends MockeryTestCase
             ->once()
             ->andReturn('+1234567890');
 
-        $this->config->shouldReceive('getSmsParams')
+        $this->config->shouldReceive('getServiceSid')
             ->once()
-            ->andReturn([]);
+            ->andReturn(null);
 
-        $this->twilioService->account->messages->shouldReceive('sendMessage')
+        $this->twilioService->messages->shouldReceive('create')
             ->atLeast()->once()
-            ->with('+1234567890', '+1111111111', 'Message text', null, [])
+            ->with('+1111111111', [
+                'from' => '+1234567890',
+                'body' => 'Message text',
+            ])
             ->andReturn(true);
 
         $this->twilio->sendMessage($message, '+1111111111');
@@ -78,13 +80,16 @@ class TwilioTest extends MockeryTestCase
 
         $this->config->shouldNotReceive('getFrom');
 
-        $this->config->shouldReceive('getSmsParams')
+        $this->config->shouldReceive('getServiceSid')
             ->once()
-            ->andReturn([]);
+            ->andReturn(null);
 
-        $this->twilioService->account->messages->shouldReceive('sendMessage')
+        $this->twilioService->messages->shouldReceive('create')
             ->atLeast()->once()
-            ->with('TwilioTest', '+1111111111', 'Message text', null, [])
+            ->with('+1111111111', [
+                'from' => 'TwilioTest',
+                'body' => 'Message text'
+            ])
             ->andReturn(true);
 
         $this->twilio->sendMessage($message, '+1111111111', true);
@@ -99,16 +104,16 @@ class TwilioTest extends MockeryTestCase
             ->once()
             ->andReturn('+1234567890');
 
-        $this->config->shouldReceive('getSmsParams')
+        $this->config->shouldReceive('getServiceSid')
             ->once()
-            ->andReturn([
-                'MessagingServiceSid' => 'service_sid'
-            ]);
+            ->andReturn('service_sid');
 
-        $this->twilioService->account->messages->shouldReceive('sendMessage')
+        $this->twilioService->messages->shouldReceive('create')
             ->atLeast()->once()
-            ->with('+1234567890', '+1111111111', 'Message text', null, [
-                'MessagingServiceSid' => 'service_sid'
+            ->with('+1111111111', [
+                'from' => '+1234567890',
+                'body' => 'Message text',
+                'messagingServiceSid' => 'service_sid'
             ])
             ->andReturn(true);
 
@@ -121,9 +126,11 @@ class TwilioTest extends MockeryTestCase
         $message = new TwilioCallMessage('http://example.com');
         $message->from = '+2222222222';
 
-        $this->twilioService->account->calls->shouldReceive('create')
+        $this->twilioService->calls->shouldReceive('create')
             ->atLeast()->once()
-            ->with('+2222222222', '+1111111111', 'http://example.com')
+            ->with('+1111111111', '+2222222222', [
+                'url' => 'http://example.com'
+            ])
             ->andReturn(true);
 
         $this->twilio->sendMessage($message, '+1111111111');

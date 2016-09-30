@@ -5,17 +5,17 @@ namespace NotificationChannels\Twilio\Test;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Notifications\Notification;
 use Mockery;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 use NotificationChannels\Twilio\TwilioCallMessage;
 use NotificationChannels\Twilio\TwilioChannel;
 use NotificationChannels\Twilio\TwilioConfig;
 use NotificationChannels\Twilio\TwilioSmsMessage;
-use PHPUnit_Framework_TestCase;
 use NotificationChannels\Twilio\Twilio;
-use Services_Twilio as TwilioService;
-use Services_Twilio_Rest_Calls;
-use Services_Twilio_Rest_Messages;
+use Twilio\Rest\Client as TwilioService;
+use Twilio\Rest\Api\V2010\Account\MessageList;
+use Twilio\Rest\Api\V2010\Account\CallList;
 
-class IntegrationTest extends PHPUnit_Framework_TestCase
+class IntegrationTest extends MockeryTestCase
 {
     /** @var TwilioService */
     protected $twilioService;
@@ -31,9 +31,8 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         parent::setUp();
 
         $this->twilioService = Mockery::mock(TwilioService::class);
-        $this->twilioService->account = new \stdClass();
-        $this->twilioService->account->messages = Mockery::mock(Services_Twilio_Rest_Messages::class);
-        $this->twilioService->account->calls = Mockery::mock(Services_Twilio_Rest_Calls::class);
+        $this->twilioService->messages = Mockery::mock(MessageList::class);
+        $this->twilioService->calls = Mockery::mock(CallList::class);
 
         $this->events = Mockery::mock(Dispatcher::class);
         $this->notification = Mockery::mock(Notification::class);
@@ -51,7 +50,10 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         $twilio = new Twilio($this->twilioService, $config);
         $channel = new TwilioChannel($twilio, $this->events);
 
-        $this->smsMessageWillBeSentToTwilioWith('+31612345678', '+22222222222', 'Message text', null, []);
+        $this->smsMessageWillBeSentToTwilioWith('+22222222222', [
+            'from' => '+31612345678',
+            'body' => 'Message text'
+        ]);
 
         $channel->send(new NotifiableWithAttribute(), $this->notification);
     }
@@ -69,8 +71,10 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         $twilio = new Twilio($this->twilioService, $config);
         $channel = new TwilioChannel($twilio, $this->events);
 
-        $this->smsMessageWillBeSentToTwilioWith('+31612345678', '+22222222222', 'Message text', null, [
-            'MessagingServiceSid' => '0123456789'
+        $this->smsMessageWillBeSentToTwilioWith('+22222222222', [
+            'from' => '+31612345678',
+            'body' => 'Message text',
+            'messagingServiceSid' => '0123456789'
         ]);
 
         $channel->send(new NotifiableWithAttribute(), $this->notification);
@@ -89,7 +93,10 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         $twilio = new Twilio($this->twilioService, $config);
         $channel = new TwilioChannel($twilio, $this->events);
 
-        $this->smsMessageWillBeSentToTwilioWith('TwilioTest', '+33333333333', 'Message text', null, []);
+        $this->smsMessageWillBeSentToTwilioWith('+33333333333', [
+            'from' => 'TwilioTest',
+            'body' => 'Message text'
+        ]);
 
         $channel->send(new NotifiableWithAlphanumericSender(), $this->notification);
     }
@@ -106,14 +113,16 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         $twilio = new Twilio($this->twilioService, $config);
         $channel = new TwilioChannel($twilio, $this->events);
 
-        $this->callWillBeSentToTwilioWith('+31612345678', '+22222222222', 'http://example.com');
+        $this->callWillBeSentToTwilioWith('+22222222222', '+31612345678', [
+            'url' => 'http://example.com'
+        ]);
 
         $channel->send(new NotifiableWithAttribute(), $this->notification);
     }
 
     protected function smsMessageWillBeSentToTwilioWith(...$args)
     {
-        $this->twilioService->account->messages->shouldReceive('sendMessage')
+        $this->twilioService->messages->shouldReceive('create')
             ->atLeast()->once()
             ->with(...$args)
             ->andReturn(true);
@@ -121,7 +130,7 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
 
     protected function callWillBeSentToTwilioWith(...$args)
     {
-        $this->twilioService->account->calls->shouldReceive('create')
+        $this->twilioService->calls->shouldReceive('create')
             ->atLeast()->once()
             ->with(...$args)
             ->andReturn(true);

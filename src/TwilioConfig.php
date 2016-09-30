@@ -45,14 +45,12 @@ class TwilioConfig
         return null;
     }
 
-    public function getSmsParams()
+    public function getServiceSid()
     {
-        $params = [];
-
         if (isset($this->config['sms_service_sid'])) {
-            $params['MessagingServiceSid'] = $this->config['sms_service_sid'];
+            return $this->config['sms_service_sid'];
         }
 
-        return $params;
+        return null;
     }
 }
