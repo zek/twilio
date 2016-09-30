@@ -26,14 +26,14 @@ class Twilio
     public function __construct(TwilioService $twilioService, TwilioConfig $config)
     {
         $this->twilioService = $twilioService;
-        $this->config = $config;
+        $this->config        = $config;
     }
 
     /**
      * Send a TwilioMessage to the a phone number.
      *
      * @param  TwilioMessage $message
-     * @param                $to
+     * @param  string        $to
      * @param bool           $useAlphanumericSender
      * @return mixed
      * @throws CouldNotSendNotification
@@ -55,7 +55,14 @@ class Twilio
         throw CouldNotSendNotification::invalidMessageObject($message);
     }
 
-    protected function sendSmsMessage($message, $to)
+    /**
+     * Send an sms message using the Twilio Service.
+     *
+     * @param TwilioSmsMessage $message
+     * @param string           $to
+     * @return \Twilio\Rest\Api\V2010\Account\MessageInstance
+     */
+    protected function sendSmsMessage(TwilioSmsMessage $message, $to)
     {
         $params = [
             'from' => $this->getFrom($message),
@@ -69,7 +76,14 @@ class Twilio
         return $this->twilioService->messages->create($to, $params);
     }
 
-    protected function makeCall($message, $to)
+    /**
+     * Make a call using the Twilio Service.
+     *
+     * @param TwilioCallMessage $message
+     * @param string            $to
+     * @return \Twilio\Rest\Api\V2010\Account\CallInstance
+     */
+    protected function makeCall(TwilioCallMessage $message, $to)
     {
         return $this->twilioService->calls->create(
             $to,
@@ -78,21 +92,31 @@ class Twilio
         );
     }
 
-    protected function getFrom($message)
+    /**
+     * Get the from address from message, or config.
+     *
+     * @param TwilioMessage $message
+     * @return string
+     * @throws CouldNotSendNotification
+     */
+    protected function getFrom(TwilioMessage $message)
     {
-        if (! $from = $message->getFrom() ?: $this->config->getFrom()) {
+        if ( ! $from = $message->getFrom() ?: $this->config->getFrom()) {
             throw CouldNotSendNotification::missingFrom();
         }
 
         return $from;
     }
 
+    /**
+     * Get the alphanumeric sender from config, if one exists.
+     *
+     * @return string|null
+     */
     protected function getAlphanumericSender()
     {
         if ($sender = $this->config->getAlphanumericSender()) {
             return $sender;
         }
-
-        return null;
     }
 }

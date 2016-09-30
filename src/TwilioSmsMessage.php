@@ -10,7 +10,8 @@ class TwilioSmsMessage extends TwilioMessage
     public $alphaNumSender = null;
 
     /**
-     * Get the from address of this message
+     * Get the from address of this message.
+     *
      * @return null|string
      */
     public function getFrom()
@@ -27,7 +28,8 @@ class TwilioSmsMessage extends TwilioMessage
     }
 
     /**
-     * Set the alphanumeric sender
+     * Set the alphanumeric sender.
+     *
      * @param $sender
      */
     public function sender($sender)

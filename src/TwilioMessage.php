@@ -19,8 +19,8 @@ abstract class TwilioMessage
     public $from;
 
     /**
+     * Create a message object.
      * @param string $content
-     *
      * @return static
      */
     public static function create($content = '')
@@ -31,7 +31,7 @@ abstract class TwilioMessage
     /**
      * Create a new message instance.
      *
-     * @param  string  $content
+     * @param  string $content
      */
     public function __construct($content = '')
     {
@@ -41,8 +41,7 @@ abstract class TwilioMessage
     /**
      * Set the message content.
      *
-     * @param  string  $content
-     *
+     * @param  string $content
      * @return $this
      */
     public function content($content)
@@ -55,8 +54,7 @@ abstract class TwilioMessage
     /**
      * Set the phone number the message should be sent from.
      *
-     * @param  string  $from
-     *
+     * @param  string $from
      * @return $this
      */
     public function from($from)
@@ -68,6 +66,7 @@ abstract class TwilioMessage
 
     /**
      * Get the from address
+     *
      * @return string
      */
     public function getFrom()

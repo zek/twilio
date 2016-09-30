@@ -23,8 +23,8 @@ class TwilioChannel
     /**
      * TwilioChannel constructor.
      *
-     * @param Twilio  $twilio
-     * @param Dispatcher  $events
+     * @param Twilio     $twilio
+     * @param Dispatcher $events
      */
     public function __construct(Twilio $twilio, Dispatcher $events)
     {
@@ -35,23 +35,23 @@ class TwilioChannel
     /**
      * Send the given notification.
      *
-     * @param  mixed  $notifiable
-     * @param  \Illuminate\Notifications\Notification  $notification
+     * @param  mixed                                  $notifiable
+     * @param  \Illuminate\Notifications\Notification $notification
      * @return mixed
      * @throws CouldNotSendNotification
      */
     public function send($notifiable, Notification $notification)
     {
         try {
-            $to = $this->getTo($notifiable);
-            $message = $notification->toTwilio($notifiable);
+            $to        = $this->getTo($notifiable);
+            $message   = $notification->toTwilio($notifiable);
             $useSender = $this->canReceiveAlphanumericSender($notifiable);
 
             if (is_string($message)) {
                 $message = new TwilioSmsMessage($message);
             }
 
-            if (! $message instanceof TwilioMessage) {
+            if ( ! $message instanceof TwilioMessage) {
                 throw CouldNotSendNotification::invalidMessageObject($message);
             }
 
@@ -63,6 +63,13 @@ class TwilioChannel
         }
     }
 
+    /**
+     * Get the address to send a notification to.
+     *
+     * @param mixed $notifiable
+     * @return mixed
+     * @throws CouldNotSendNotification
+     */
     protected function getTo($notifiable)
     {
         if ($notifiable->routeNotificationFor('twilio')) {
@@ -76,7 +83,8 @@ class TwilioChannel
     }
 
     /**
-     * Get the alphanumeric sender
+     * Get the alphanumeric sender.
+     *
      * @param $notifiable
      * @return mixed|null
      * @throws CouldNotSendNotification
