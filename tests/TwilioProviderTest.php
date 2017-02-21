@@ -2,14 +2,14 @@
 
 namespace NotificationChannels\Twilio\Test;
 
-use Illuminate\Contracts\Foundation\Application;
 use Mockery;
-use NotificationChannels\Twilio\TwilioChannel;
-use NotificationChannels\Twilio\TwilioProvider;
+use ArrayAccess;
 use PHPUnit_Framework_TestCase;
 use Services_Twilio as TwilioService;
 use NotificationChannels\Twilio\Twilio;
-use ArrayAccess;
+use NotificationChannels\Twilio\TwilioChannel;
+use NotificationChannels\Twilio\TwilioProvider;
+use Illuminate\Contracts\Foundation\Application;
 
 class TwilioProviderTest extends PHPUnit_Framework_TestCase
 {
@@ -48,6 +48,10 @@ class TwilioProviderTest extends PHPUnit_Framework_TestCase
         $this->app->shouldReceive('give')->with(Mockery::on(function ($twilio) {
             return  $twilio() instanceof Twilio;
         }))->once();
+
+        $this->app->shouldReceive('bind')->with(TwilioService::class, Mockery::on(function ($twilio) {
+            return  $twilio() instanceof TwilioService;
+        }))->once()->andReturn($this->app);
 
         $this->provider->boot();
     }
