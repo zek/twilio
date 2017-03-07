@@ -28,4 +28,22 @@ class TwilioSmsMessageTest extends TwilioMessageTest
 
         $this->assertEquals('myMessage', $message->content);
     }
+
+    /** @test */
+    public function it_sets_alphanumeric_sender()
+    {
+        $message = TwilioSmsMessage::create('myMessage');
+        $message->sender('TestSender');
+
+        $this->assertEquals('TestSender', $message->alphaNumSender);
+    }
+
+    /** @test */
+    public function it_can_return_the_alphanumeric_sender_if_set()
+    {
+        $message = TwilioSmsMessage::create('myMessage');
+        $message->sender('TestSender');
+
+        $this->assertEquals('TestSender', $message->getFrom());
+    }
 }
