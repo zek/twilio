@@ -23,8 +23,8 @@ class TwilioChannel
     /**
      * TwilioChannel constructor.
      *
-     * @param Twilio  $twilio
-     * @param Dispatcher  $events
+     * @param Twilio     $twilio
+     * @param Dispatcher $events
      */
     public function __construct(Twilio $twilio, Dispatcher $events)
     {
@@ -35,8 +35,8 @@ class TwilioChannel
     /**
      * Send the given notification.
      *
-     * @param  mixed  $notifiable
-     * @param  \Illuminate\Notifications\Notification  $notification
+     * @param  mixed                                  $notifiable
+     * @param  \Illuminate\Notifications\Notification $notification
      * @return mixed
      * @throws CouldNotSendNotification
      */
@@ -45,6 +45,7 @@ class TwilioChannel
         try {
             $to = $this->getTo($notifiable);
             $message = $notification->toTwilio($notifiable);
+            $useSender = $this->canReceiveAlphanumericSender($notifiable);
 
             if (is_string($message)) {
                 $message = new TwilioSmsMessage($message);
@@ -54,7 +55,7 @@ class TwilioChannel
                 throw CouldNotSendNotification::invalidMessageObject($message);
             }
 
-            return $this->twilio->sendMessage($message, $to);
+            return $this->twilio->sendMessage($message, $to, $useSender);
         } catch (Exception $exception) {
             $this->events->fire(
                 new NotificationFailed($notifiable, $notification, 'twilio', ['message' => $exception->getMessage()])
@@ -62,6 +63,13 @@ class TwilioChannel
         }
     }
 
+    /**
+     * Get the address to send a notification to.
+     *
+     * @param mixed $notifiable
+     * @return mixed
+     * @throws CouldNotSendNotification
+     */
     protected function getTo($notifiable)
     {
         if ($notifiable->routeNotificationFor('twilio')) {
@@ -72,5 +80,18 @@ class TwilioChannel
         }
 
         throw CouldNotSendNotification::invalidReceiver();
+    }
+
+    /**
+     * Get the alphanumeric sender.
+     *
+     * @param $notifiable
+     * @return mixed|null
+     * @throws CouldNotSendNotification
+     */
+    protected function canReceiveAlphanumericSender($notifiable)
+    {
+        return method_exists($notifiable, 'canReceiveAlphanumericSender') &&
+        $notifiable->canReceiveAlphanumericSender();
     }
 }

@@ -2,10 +2,10 @@
 
 namespace NotificationChannels\Twilio\Test;
 
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 use NotificationChannels\Twilio\TwilioMessage;
-use PHPUnit_Framework_TestCase;
 
-abstract class TwilioMessageTest extends PHPUnit_Framework_TestCase
+abstract class TwilioMessageTest extends MockeryTestCase
 {
     /** @var TwilioMessage */
     protected $message;
@@ -30,5 +30,13 @@ abstract class TwilioMessageTest extends PHPUnit_Framework_TestCase
         $this->message->from('+1234567890');
 
         $this->assertEquals('+1234567890', $this->message->from);
+    }
+
+    /** @test */
+    public function it_can_return_the_from_using_getter()
+    {
+        $this->message->from('+1234567890');
+
+        $this->assertEquals('+1234567890', $this->message->getFrom());
     }
 }
