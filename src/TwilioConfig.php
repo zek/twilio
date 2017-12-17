@@ -19,6 +19,26 @@ class TwilioConfig
         $this->config = $config;
     }
 
+	/**
+	 * Get the username.
+	 *
+	 * @return string
+	 */
+	public function getUsername()
+    {
+    	return $this->config['username'];
+    }
+
+	/**
+	 * Get the password.
+	 *
+	 * @return string
+	 */
+	public function getPassword()
+    {
+    	return $this->config['password'];
+    }
+
     /**
      * Get the account sid.
      *
@@ -27,16 +47,6 @@ class TwilioConfig
     public function getAccountSid()
     {
         return $this->config['account_sid'];
-    }
-
-    /**
-     * Get the auth token.
-     *
-     * @return string
-     */
-    public function getAuthToken()
-    {
-        return $this->config['auth_token'];
     }
 
     /**
