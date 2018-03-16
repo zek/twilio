@@ -29,24 +29,24 @@ class TwilioConfig
         return $this->config['auth_token'];
     }
 
-	/**
-	 * Get the username.
-	 *
-	 * @return string
-	 */
-	public function getUsername()
+    /**
+     * Get the username.
+     *
+     * @return string
+     */
+    public function getUsername()
     {
-    	return $this->config['username'];
+        return $this->config['username'];
     }
 
-	/**
-	 * Get the password.
-	 *
-	 * @return string
-	 */
-	public function getPassword()
+    /**
+     * Get the password.
+     *
+     * @return string
+     */
+    public function getPassword()
     {
-    	return $this->config['password'];
+        return $this->config['password'];
     }
 
     /**

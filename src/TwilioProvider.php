@@ -25,11 +25,13 @@ class TwilioProvider extends ServiceProvider
             $config = $this->app['config']['services.twilio'];
             $account_sid = array_get($config, 'account_sid');
             $username = array_get($config, 'username');
-            if (!empty($username)) {
+            if (! empty($username)) {
                 $password = array_get($config, 'password');
+
                 return new TwilioService($username, $password, $account_sid);
             } else {
                 $auth_token = array_get($config, 'auth_token');
+
                 return new TwilioService($account_sid, $auth_token);
             }
         });
