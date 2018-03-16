@@ -5,8 +5,8 @@ namespace NotificationChannels\Twilio;
 use Exception;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Events\Dispatcher;
-use NotificationChannels\Twilio\Exceptions\CouldNotSendNotification;
 use Illuminate\Notifications\Events\NotificationFailed;
+use NotificationChannels\Twilio\Exceptions\CouldNotSendNotification;
 
 class TwilioChannel
 {

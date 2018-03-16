@@ -2,8 +2,8 @@
 
 namespace NotificationChannels\Twilio;
 
-use NotificationChannels\Twilio\Exceptions\CouldNotSendNotification;
 use Twilio\Rest\Client as TwilioService;
+use NotificationChannels\Twilio\Exceptions\CouldNotSendNotification;
 
 class Twilio
 {
@@ -124,7 +124,5 @@ class Twilio
         if ($sender = $this->config->getAlphanumericSender()) {
             return $sender;
         }
-
-        return null;
     }
 }

@@ -4,11 +4,11 @@ namespace NotificationChannels\Twilio\Test;
 
 use Mockery;
 use ArrayAccess;
+use NotificationChannels\Twilio\Twilio;
 use Twilio\Rest\Client as TwilioService;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
-use NotificationChannels\Twilio\Twilio;
-use NotificationChannels\Twilio\TwilioChannel;
 use NotificationChannels\Twilio\TwilioConfig;
+use NotificationChannels\Twilio\TwilioChannel;
 use NotificationChannels\Twilio\TwilioProvider;
 use Illuminate\Contracts\Foundation\Application;
 
