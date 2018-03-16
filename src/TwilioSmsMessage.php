@@ -29,9 +29,12 @@ class TwilioSmsMessage extends TwilioMessage
      * Set the alphanumeric sender.
      *
      * @param $sender
+     * @return $this
      */
     public function sender($sender)
     {
         $this->alphaNumSender = $sender;
+
+        return $this;
     }
 }

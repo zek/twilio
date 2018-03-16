@@ -15,9 +15,12 @@ class TwilioMmsMessage extends TwilioSmsMessage
      * Set the alphanumeric sender.
      *
      * @param $url
+     * @return $this
      */
     public function mediaUrl($url)
     {
         $this->mediaUrl = $url;
+
+        return $this;
     }
 }
