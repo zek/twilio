@@ -57,9 +57,12 @@ class TwilioChannel
 
             return $this->twilio->sendMessage($message, $to, $useSender);
         } catch (Exception $exception) {
-            $this->events->fire(
-                new NotificationFailed($notifiable, $notification, 'twilio', ['message' => $exception->getMessage(), 'exception' => $exception])
-            );
+            $event = new NotificationFailed($notifiable, $notification, 'twilio', ['message' => $exception->getMessage(), 'exception' => $exception]);
+            if (function_exists('event')) { // Use event helper when possible to add Lumen support
+                event($event);
+            } else {
+                $this->events->fire($event);
+            }
         }
     }
 
