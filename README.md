@@ -31,7 +31,7 @@ You can install the package via composer:
 composer require laravel-notification-channels/twilio
 ```
 
-You must install the service provider:
+Add the service provider (only required on Laravel 5.4 or lower):
 
 ```php
 // config/app.php
