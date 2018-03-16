@@ -58,7 +58,7 @@ class TwilioChannel
             return $this->twilio->sendMessage($message, $to, $useSender);
         } catch (Exception $exception) {
             $this->events->fire(
-                new NotificationFailed($notifiable, $notification, 'twilio', ['message' => $exception->getMessage()])
+                new NotificationFailed($notifiable, $notification, 'twilio', ['message' => $exception->getMessage(), 'exception' => $exception])
             );
         }
     }
