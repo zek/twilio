@@ -61,6 +61,7 @@ class Twilio
      * @param TwilioSmsMessage $message
      * @param string           $to
      * @return \Twilio\Rest\Api\V2010\Account\MessageInstance
+     * @throws CouldNotSendNotification
      */
     protected function sendSmsMessage(TwilioSmsMessage $message, $to)
     {
@@ -82,6 +83,7 @@ class Twilio
      * @param TwilioCallMessage $message
      * @param string            $to
      * @return \Twilio\Rest\Api\V2010\Account\CallInstance
+     * @throws CouldNotSendNotification
      */
     protected function makeCall(TwilioCallMessage $message, $to)
     {
@@ -118,5 +120,7 @@ class Twilio
         if ($sender = $this->config->getAlphanumericSender()) {
             return $sender;
         }
+
+        return null;
     }
 }

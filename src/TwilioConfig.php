@@ -19,6 +19,16 @@ class TwilioConfig
         $this->config = $config;
     }
 
+    /**
+     * Get the auth token.
+     *
+     * @return string
+     */
+    public function getAuthToken()
+    {
+        return $this->config['auth_token'];
+    }
+
 	/**
 	 * Get the username.
 	 *
