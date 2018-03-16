@@ -70,6 +70,10 @@ class Twilio
             'body' => trim($message->content),
         ];
 
+        if ($message instanceof TwilioMmsMessage) {
+            $params['mediaUrl'] = $message->mediaUrl;
+        }
+
         if ($serviceSid = $this->config->getServiceSid()) {
             $params['messagingServiceSid'] = $serviceSid;
         }

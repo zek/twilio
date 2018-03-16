@@ -82,7 +82,30 @@ class AccountApproved extends Notification
 }
 ```
 
-You can also create a Twilio call:
+You can also send an MMS:
+
+``` php
+use NotificationChannels\Twilio\TwilioChannel;
+use NotificationChannels\Twilio\TwilioMmsMessage;
+use Illuminate\Notifications\Notification;
+
+class AccountApproved extends Notification
+{
+    public function via($notifiable)
+    {
+        return [TwilioChannel::class];
+    }
+
+    public function toTwilio($notifiable)
+    {
+        return (new TwilioMmsMessage())
+            ->content("Your {$notifiable->service} account was approved!")
+            ->mediaUrl("https://picsum.photos/300");
+    }
+}
+```
+
+Or create a Twilio call:
 
 ``` php
 use NotificationChannels\Twilio\TwilioChannel;
