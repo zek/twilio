@@ -20,12 +20,12 @@ class TwilioSmsMessage extends TwilioMessage
     public $maxPrice = null;
 
     /**
-     * @var null|boolean
+     * @var null|bool
      */
     public $provideFeedback = null;
 
     /**
-     * @var null|integer
+     * @var null|int
      */
     public $validityPeriod = null;
 
@@ -87,7 +87,7 @@ class TwilioSmsMessage extends TwilioMessage
     /**
      * Set the provide feedback option.
      *
-     * @param boolean $provideFeedback
+     * @param bool $provideFeedback
      * @return $this
      */
     public function provideFeedback($provideFeedback)
@@ -100,7 +100,7 @@ class TwilioSmsMessage extends TwilioMessage
     /**
      * Set the validity period (in seconds).
      *
-     * @param integer $validityPeriod
+     * @param int $validityPeriod
      * @return $this
      */
     public function validityPeriod($validityPeriod)

@@ -131,7 +131,7 @@ class Twilio
      */
     protected function getFrom(TwilioMessage $message)
     {
-        if (!$from = $message->getFrom() ?: $this->config->getFrom()) {
+        if (! $from = $message->getFrom() ?: $this->config->getFrom()) {
             throw CouldNotSendNotification::missingFrom();
         }
 
