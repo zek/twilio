@@ -5,16 +5,14 @@ namespace NotificationChannels\Twilio;
 class TwilioMmsMessage extends TwilioSmsMessage
 {
     /**
-     * The message media url (for MMS messages).
-     *
-     * @var string
+     * @var string|null
      */
-    public $mediaUrl;
+    public $mediaUrl = null;
 
     /**
-     * Set the alphanumeric sender.
+     * Set the message media url.
      *
-     * @param $url
+     * @param string $url
      * @return $this
      */
     public function mediaUrl($url)

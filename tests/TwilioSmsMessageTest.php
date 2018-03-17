@@ -46,4 +46,23 @@ class TwilioSmsMessageTest extends TwilioMessageTest
 
         $this->assertEquals('TestSender', $message->getFrom());
     }
+
+    /** @test */
+    public function it_can_set_optional_parameters()
+    {
+        $message = TwilioSmsMessage::create('myMessage');
+        $message->statusCallback('http://example.com');
+        $message->statusCallbackMethod('PUT');
+        $message->applicationSid('ABCD1234');
+        $message->maxPrice(0.05);
+        $message->provideFeedback(true);
+        $message->validityPeriod(120);
+
+        $this->assertEquals('http://example.com', $message->statusCallback);
+        $this->assertEquals('PUT', $message->statusCallbackMethod);
+        $this->assertEquals('ABCD1234', $message->applicationSid);
+        $this->assertEquals(0.05, $message->maxPrice);
+        $this->assertEquals(true, $message->provideFeedback);
+        $this->assertEquals(120, $message->validityPeriod);
+    }
 }
